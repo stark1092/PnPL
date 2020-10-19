@@ -32,3 +32,8 @@ We provide two demos to show how to use,
 The source code is released under GPLv3 license.
 
 Any problem, please contact maoshuyuan123@gmail.com
+
+
+# Notification by Zihang Cao
+Modify pnpl to suit newest g2o.
+Add pybind and edit the CmakeLists.txt.
