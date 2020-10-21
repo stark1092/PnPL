@@ -7,8 +7,8 @@
 #include <g2o/core/optimization_algorithm_levenberg.h>
 #include <g2o/types/sba/types_six_dof_expmap.h>
 #include <g2o/solvers/csparse/linear_solver_csparse.h>
-#include "g2o/solvers/cholmod/linear_solver_cholmod.h"
-#include "g2o/solvers/dense/linear_solver_dense.h"
+#include <g2o/solvers/cholmod/linear_solver_cholmod.h>
+#include <g2o/solvers/dense/linear_solver_dense.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 namespace py = pybind11;
@@ -364,22 +364,23 @@ py::array_t<float> getPose(py::array_t<float> &pts3d_arr, py::array_t<float> &pt
     optimizer.optimize(10);
     // output result
     Eigen::MatrixXd T = Eigen::Isometry3d(v_se3->estimate()).matrix();
-    /*cv::Mat R = (cv::Mat_<float>(3,3)<< T(0,0),T(0,1),T(0,2),
+    cv::Mat R = (cv::Mat_<float>(3,3)<< T(0,0),T(0,1),T(0,2),
                                 T(1,0),T(1,1),T(1,2),
                                 T(2,0),T(2,1),T(2,2));
-    cv::Mat t = (cv::Mat_<float>(3,1)<<T(0,3),T(1,3),T(2,3));*/
+    cv::Mat t = (cv::Mat_<float>(3,1)<<T(0,3),T(1,3),T(2,3));
     
     auto result = py::array_t<float>(12);
     result.resize({3, 4});
     py::buffer_info buf_result = result.request();
     float* ptr_result = (float*)buf_result.ptr;
+    
     for(int i = 0;i < 3; i++)
     {
         for(int j = 0; j < 3;j++)
         {
-            ptr_result[i * 3 + j] = T(i, j);
+            ptr_result[i * 4 + j] = T(i, j);
         }
-        ptr_result[i * 3 + 3] = T(i, 3);
+        ptr_result[i * 4 + 3] = T(i, 3);
     }
     return result;
         
