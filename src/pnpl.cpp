@@ -235,27 +235,27 @@ void PnPL(const std::vector<cv::Point3f>& pts3d, const std::vector<cv::Point2f>&
     t = (cv::Mat_<float>(3,1)<<T(0,3),T(1,3),T(2,3));
 }
 
-py::array_t<float> getPose(py::array_t<float> &pts3d_arr, py::array_t<float> &pts2d_arr,
-          py::array_t<float> &lns3d_arr, py::array_t<float> &lns2d_arr,
-          py::array_t<float> &K_arr)
+py::array_t<double> getPose(py::array_t<double> &pts3d_arr, py::array_t<double> &pts2d_arr,
+          py::array_t<double> &lns3d_arr, py::array_t<double> &lns2d_arr,
+          py::array_t<double> &K_arr)
 {
     // int npts = pts3d.size();
     // int nlns = lns3d.size();
     
     py::buffer_info pts3d_buf = pts3d_arr.request();
-    auto* pts3d_ptr = (float*)pts3d_buf.ptr;
+    auto* pts3d_ptr = (double*)pts3d_buf.ptr;
     
     py::buffer_info pts2d_buf = pts2d_arr.request();
-    auto* pts2d_ptr = (float*)pts2d_buf.ptr;
+    auto* pts2d_ptr = (double*)pts2d_buf.ptr;
     
     py::buffer_info lns3d_buf = lns3d_arr.request();
-    auto* lns3d_ptr = (float*)lns3d_buf.ptr;
+    auto* lns3d_ptr = (double*)lns3d_buf.ptr;
     
     py::buffer_info lns2d_buf = lns2d_arr.request();
-    auto* lns2d_ptr = (float*)lns2d_buf.ptr;
+    auto* lns2d_ptr = (double*)lns2d_buf.ptr;
     
     py::buffer_info K_buf = K_arr.request();
-    auto* K_ptr = (float*)K_buf.ptr;
+    auto* K_ptr = (double*)K_buf.ptr;
     cv::Mat K = cv::Mat(K_buf.shape[0], K_buf.shape[1],  CV_32FC1, K_ptr);
     int npts = pts3d_buf.shape[0];
     int nlns = lns3d_buf.shape[0];
@@ -364,15 +364,15 @@ py::array_t<float> getPose(py::array_t<float> &pts3d_arr, py::array_t<float> &pt
     optimizer.optimize(10);
     // output result
     Eigen::MatrixXd T = Eigen::Isometry3d(v_se3->estimate()).matrix();
-    cv::Mat R = (cv::Mat_<float>(3,3)<< T(0,0),T(0,1),T(0,2),
+    cv::Mat R = (cv::Mat_<double>(3,3)<< T(0,0),T(0,1),T(0,2),
                                 T(1,0),T(1,1),T(1,2),
                                 T(2,0),T(2,1),T(2,2));
-    cv::Mat t = (cv::Mat_<float>(3,1)<<T(0,3),T(1,3),T(2,3));
+    cv::Mat t = (cv::Mat_<double>(3,1)<<T(0,3),T(1,3),T(2,3));
     
-    auto result = py::array_t<float>(12);
+    auto result = py::array_t<double>(12);
     result.resize({3, 4});
     py::buffer_info buf_result = result.request();
-    float* ptr_result = (float*)buf_result.ptr;
+    double* ptr_result = (double*)buf_result.ptr;
     
     for(int i = 0;i < 3; i++)
     {
