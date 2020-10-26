@@ -256,7 +256,7 @@ py::array_t<double> getPose(py::array_t<double> &pts3d_arr, py::array_t<double> 
     
     py::buffer_info K_buf = K_arr.request();
     auto* K_ptr = (double*)K_buf.ptr;
-    cv::Mat K = cv::Mat(K_buf.shape[0], K_buf.shape[1],  CV_32FC1, K_ptr);
+    cv::Mat K = cv::Mat(K_buf.shape[0], K_buf.shape[1],  CV_64FC1, K_ptr);
     int npts = pts3d_buf.shape[0];
     int nlns = lns3d_buf.shape[0];
     std::cout << "points number: " << npts << std::endl;
@@ -336,8 +336,8 @@ py::array_t<double> getPose(py::array_t<double> &pts3d_arr, py::array_t<double> 
     // add vertex for lines and edges for projection
     for(int i=0; i<nlns; i++)
     {
-        const auto& ln3d = cv::Vec6f(lns3d_ptr[i * 6 + 0], lns3d_ptr[i * 6 + 1], lns3d_ptr[i * 6 + 2], lns3d_ptr[i * 6 + 3], lns3d_ptr[i * 6 + 4], lns3d_ptr[i * 6 + 5]);
-        const auto& ln2d = cv::Vec4f(lns2d_ptr[i * 4 + 0], lns2d_ptr[i * 4 + 1], lns2d_ptr[i * 4 + 2], lns2d_ptr[i * 4 + 3]);
+        const auto& ln3d = cv::Vec6d(lns3d_ptr[i * 6 + 0], lns3d_ptr[i * 6 + 1], lns3d_ptr[i * 6 + 2], lns3d_ptr[i * 6 + 3], lns3d_ptr[i * 6 + 4], lns3d_ptr[i * 6 + 5]);
+        const auto& ln2d = cv::Vec4d(lns2d_ptr[i * 4 + 0], lns2d_ptr[i * 4 + 1], lns2d_ptr[i * 4 + 2], lns2d_ptr[i * 4 + 3]);
         // printf("%.3f %.3f %.3f %.3f %.3f\n",pt.x, pt.y, pt.z, uv.x,uv.y);
 
         g2o::VertexSBALine * v_l = new g2o::VertexSBALine();
